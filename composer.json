@@ -1,0 +1,15 @@
+{
+	"name": "webdevstudios/mu-autoload",
+	"description": "Generates a file in mu-plugins to include your project's autoload.php",
+	"type": "wordpress-muplugin",
+	"autoload": {
+		"psr-4": {
+		  "WebDevStudios\\MUAutoload\\": "src/"
+		}
+	},
+	"scripts": {
+		"post-update-cmd": [
+			"WebDevStudios\\MUAutoload\\Installer::install"
+		]
+	}
+}
