@@ -57,7 +57,7 @@ class Installer {
 		$wp_load = $dir . '/wp-load.php';
 
 		if ( is_readable( $wp_load ) ) {
-			include $wp_load;
+			require_once $wp_load;
 			return true;
 		}
 

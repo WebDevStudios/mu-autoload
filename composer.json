@@ -8,7 +8,7 @@
 		}
 	},
 	"scripts": {
-		"post-update-cmd": [
+		"post-autoload-dump": [
 			"WebDevStudios\\MUAutoload\\Installer::install"
 		]
 	}
