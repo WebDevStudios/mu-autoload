@@ -37,7 +37,7 @@ class Installer {
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents -- OK, local only.
 		file_put_contents(
 			WP_CONTENT_DIR . '/mu-plugins/mu-autoload.php',
-			self::get_autoloader_contents( self::get_wp_dir( $vendor_dir ) )
+			self::get_autoloader_contents( self::get_wp_autoload_path( $vendor_dir ) )
 		);
 	}
 
@@ -65,33 +65,32 @@ class Installer {
 	}
 
 	/**
-	 * Try to do some WP constant substitutions in the vendor directory path.
+	 * Try to do some WP constant substitutions in the autoload directory path.
 	 *
 	 * @param string $vendor_dir Vendor directory.
-	 * @return string Directory path with possible WP constant substitutions.
+	 * @return string Autoload file path, quoted for include, with possible WP constant substitutions.
 	 * @author Justin Foell <justin.foell@webdevstudios.com>
 	 * @since  2019-11-12
 	 */
-	private static function get_wp_dir( $vendor_dir ) {
+	private static function get_wp_autoload_path( $vendor_dir ) {
 		if ( 0 === strpos( $vendor_dir, WP_CONTENT_DIR ) ) {
-			return 'WP_CONTENT_DIR . ' . substr( $vendor_dir, strlen( WP_CONTENT_DIR ) );
+			return "WP_CONTENT_DIR . '" . substr( $vendor_dir, strlen( WP_CONTENT_DIR ) ) . "/autoload.php'";
 		} elseif ( 0 === strpos( $vendor_dir, ABSPATH ) ) {
-			return 'ABSPATH . ' . substr( $vendor_dir, strlen( ABSPATH ) );
+			return "ABSPATH . '" . substr( $vendor_dir, strlen( ABSPATH ) ) . "/autoload.php'";
 		}
-		return $vendor_dir;
+		return "'{$vendor_dir}/autoload.php'";
 	}
 
 	/**
 	 * Get the autoloader file contents.
 	 *
-	 * @param string $vendor_dir Vendor directory.
+	 * @param string $autoload_path Path to autoload.php.
 	 * @return string PHP autoloader file contents.
 	 * @author Justin Foell <justin.foell@webdevstudios.com>
 	 * @since  2019-11-12
 	 */
-	private static function get_autoloader_contents( $vendor_dir ) {
-		$autoload = $vendor_dir . '/autoload.php';
-		$date     = date( 'Y-m-d' );
+	private static function get_autoloader_contents( $autoload_path ) {
+		$date = date( 'Y-m-d' );
 		return <<<LOADER
 <?php
 /**
@@ -102,7 +101,7 @@ class Installer {
  * @package WebDevStudios\MUAutoload
  */
 
-\$autoload = {$autoload};
+\$autoload = {$autoload_path};
 
 if ( is_readable( \$autoload ) ) {
 	require_once \$autoload;
