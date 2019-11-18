@@ -11,5 +11,8 @@
 		"post-autoload-dump": [
 			"WebDevStudios\\MUAutoload\\Installer::install"
 		]
+	},
+	"require": {
+		"composer/installers": "~1.0"
 	}
 }
