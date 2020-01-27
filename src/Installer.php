@@ -10,6 +10,7 @@
 namespace WebDevStudios\MUAutoload;
 
 use Composer\Script\Event;
+use ErrorException;
 
 /**
  * Installer class.
@@ -57,7 +58,15 @@ class Installer {
 		$wp_load = $dir . '/wp-load.php';
 
 		if ( is_readable( $wp_load ) ) {
-			require_once $wp_load;
+			try {
+				require_once $wp_load;
+			} catch ( ErrorException $ee ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch -- empty OK.
+
+				/*
+				 * We may encounter a database exception if it's not hooked up,
+				 * that's OK we just want the define()s.
+				 */
+			}
 			return true;
 		}
 
