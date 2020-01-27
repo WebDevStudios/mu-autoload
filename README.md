@@ -6,7 +6,7 @@ Installs an mu-plugin to load libraries for all themes & plugins from a common v
 
 Add to your project's composer file by running:
 
-## Optional 
+## Optional
 (if you haven't yet added the WDS Satis package server to your composer.json)
 
 `composer config repositories.wds-satis composer https://packages.wdslab.com`
@@ -16,9 +16,3 @@ Add to your project's composer file by running:
 `composer config scripts.post-autoload-dump "WebDevStudios\MUAutoload\Installer::install"`
 
 `composer require webdevstudios/mu-autoload:~1.0`
-
-# Changelog
-
-## [1.0]
-
-* Initial release
