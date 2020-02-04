@@ -1,8 +1,9 @@
 # Changelog
 
-## [Unreleased]
+## [1.2]
 
 * Better handling of partial WP install
+* Added guessing for no WP install
 
 ## [1.1]
 

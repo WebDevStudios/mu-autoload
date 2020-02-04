@@ -29,8 +29,12 @@ class Installer {
 	 */
 	public static function install( Event $event ) {
 		if ( ! self::include_wp( dirname( __FILE__ ) ) ) {
-			echo "Couldn't include WP, mu-plugin autoloader installation aborted.";
-			exit( 1 );
+			echo "Couldn't include WP... guessing location\n";
+
+			if ( ! self::wp_location_best_guess( $event->getComposer()->getPackage()->getExtra() ) ) {
+				echo "mu-plugin autoloader installation aborted\n";
+				exit( 1 );
+			}
 		}
 
 		$vendor_dir = $event->getComposer()->getConfig()->get( 'vendor-dir' );
@@ -78,6 +82,46 @@ class Installer {
 		}
 
 		return self::include_wp( $dir . '/..' );
+	}
+
+	/**
+	 * Try to guess the WP install directory based on installer-paths in composer.json.
+	 *
+	 * @param array $extra Composer file extra section.
+	 * @return boolean True if location guessed and path define()s set, false otherwise.
+	 * @author Justin Foell <justin.foell@webdevstudios.com>
+	 * @since  2020-02-04
+	 */
+	private static function wp_location_best_guess( array $extra ) {
+		if ( empty( $extra['installer-paths'] ) ) {
+			return false;
+		}
+
+		$composer_json_dir = getcwd();
+
+		foreach ( $extra['installer-paths'] as $path => $constraints ) {
+			$value = ( is_array( $constraints ) && count( $constraints ) === 1 ) ? current( $constraints ) : $constraints;
+
+			if ( in_array( $value, array( 'type:wordpress-muplugin', 'type:wordpress-plugin' ), true ) ) {
+				$parts = explode( '/', $path );
+
+				foreach ( $parts as $index => $dir ) {
+					if ( in_array( $dir, array( 'wp-content', 'mu-plugins', 'plugins' ), true ) ) {
+
+						$extra_path = 'wp-content' !== $dir ? '/..' : '';
+						$partial    = array_slice( $parts, 0, $index + 1 );
+						$wp_content = realpath( $composer_json_dir . '/' . join( '/', $partial ) . $extra_path );
+
+						define( 'WP_CONTENT_DIR', $wp_content );
+						define( 'ABSPATH', realpath( $wp_content . '/..' ) );
+
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**
