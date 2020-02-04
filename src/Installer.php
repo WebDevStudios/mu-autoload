@@ -35,9 +35,11 @@ class Installer {
 
 		$vendor_dir = $event->getComposer()->getConfig()->get( 'vendor-dir' );
 
+		$base_path = defined( 'WP_CONTENT_DIR' ) ? WP_CONTENT_DIR : ABSPATH . 'wp-content';
+
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents -- OK, local only.
 		file_put_contents(
-			WP_CONTENT_DIR . '/mu-plugins/mu-autoload.php',
+			$base_path . '/mu-plugins/mu-autoload.php',
 			self::get_autoloader_contents( self::get_wp_autoload_path( $vendor_dir ) )
 		);
 	}
@@ -51,7 +53,9 @@ class Installer {
 	 * @since  2019-11-12
 	 */
 	private static function include_wp( $dir ) {
-		if ( '/' === realpath( $dir ) ) {
+		$dir = realpath( $dir );
+
+		if ( '/' === $dir ) {
 			return false;
 		}
 
@@ -64,8 +68,11 @@ class Installer {
 
 				/*
 				 * We may encounter a database exception if it's not hooked up,
-				 * that's OK we just want the define()s.
+				 * that's OK if we can still get to the define()s.
 				 */
+				if ( ! defined( 'WP_CONTENT_DIR' ) && ! defined( 'ABSPATH' ) ) {
+					return false;
+				}
 			}
 			return true;
 		}
@@ -82,9 +89,9 @@ class Installer {
 	 * @since  2019-11-12
 	 */
 	private static function get_wp_autoload_path( $vendor_dir ) {
-		if ( 0 === strpos( $vendor_dir, WP_CONTENT_DIR ) ) {
+		if ( defined( 'WP_CONTENT_DIR' ) && 0 === strpos( $vendor_dir, WP_CONTENT_DIR ) ) {
 			return "WP_CONTENT_DIR . '" . substr( $vendor_dir, strlen( WP_CONTENT_DIR ) ) . "/autoload.php'";
-		} elseif ( 0 === strpos( $vendor_dir, ABSPATH ) ) {
+		} elseif ( defined( 'ABSPATH' ) && 0 === strpos( $vendor_dir, ABSPATH ) ) {
 			return "ABSPATH . '" . substr( $vendor_dir, strlen( ABSPATH ) ) . "/autoload.php'";
 		}
 		return "'{$vendor_dir}/autoload.php'";

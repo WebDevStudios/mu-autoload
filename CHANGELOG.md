@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+* Better handling of partial WP install
+
 ## [1.1]
 
 * Added exception handling when no database available.
