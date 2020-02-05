@@ -74,7 +74,7 @@ class Installer {
 				 * We may encounter a database exception if it's not hooked up,
 				 * that's OK if we can still get to the define()s.
 				 */
-				if ( ! defined( 'WP_CONTENT_DIR' ) && ! defined( 'ABSPATH' ) ) {
+				if ( ! defined( 'ABSPATH' ) && ! defined( 'WP_CONTENT_DIR' ) ) {
 					return false;
 				}
 			}
