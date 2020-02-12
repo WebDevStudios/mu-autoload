@@ -28,6 +28,7 @@ class Installer {
 	 * @since  2019-11-12
 	 */
 	public static function install( Event $event ) {
+		echo 'Creating mu-autoload.php... ';
 		if ( ! self::include_wp( dirname( __FILE__ ) ) ) {
 			echo "Couldn't include WP... guessing location\n";
 
