@@ -38,14 +38,21 @@ class Installer {
 		}
 
 		$vendor_dir = $event->getComposer()->getConfig()->get( 'vendor-dir' );
-
-		$base_path = defined( 'WP_CONTENT_DIR' ) ? WP_CONTENT_DIR : ABSPATH . 'wp-content';
+		$base_path  = defined( 'WP_CONTENT_DIR' ) ? WP_CONTENT_DIR : ABSPATH . 'wp-content';
+		$file_path  = $base_path . '/mu-plugins/mu-autoload.php';
 
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents -- OK, local only.
-		file_put_contents(
-			$base_path . '/mu-plugins/mu-autoload.php',
+		$result = file_put_contents(
+			$file_path,
 			self::get_autoloader_contents( self::get_wp_autoload_path( $vendor_dir ) )
 		);
+
+		if ( false === $result ) {
+			echo "Unable to write file to: {$file_path}\n";
+			exit( 1 );
+		} else {
+			echo "Wrote {$result} bytes to: {$file_path}\n";
+		}
 	}
 
 	/**
