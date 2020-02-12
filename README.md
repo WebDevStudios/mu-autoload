@@ -15,4 +15,4 @@ Add to your project's composer file by running:
 
 `composer config scripts.post-autoload-dump "WebDevStudios\MUAutoload\Installer::install"`
 
-`composer require webdevstudios/mu-autoload:~1.0`
+`composer require webdevstudios/mu-autoload:^1.0`

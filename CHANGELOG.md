@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.3]
+
+* Added progress indication
+* Added write failure message
+
 ## [1.2]
 
 * Better handling of partial WP install
