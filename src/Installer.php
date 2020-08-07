@@ -67,7 +67,10 @@ class Installer {
 	private static function include_wp( $dir ) {
 		$dir = realpath( $dir );
 
-		if ( '/' === $dir ) {
+		$dir = self::normalize_path( $dir );
+
+		// Stop b/c we've traversed up to the root.
+		if ( self::is_root( $dir ) ) {
 			return false;
 		}
 
@@ -130,6 +133,47 @@ class Installer {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Is the directory the root directory.
+	 *
+	 * @param string $dir Directory path.
+	 * @return boolean Whether or not it's the root.
+	 * @author Justin Foell <justin.foell@webdevstudios.com>
+	 * @since  2020-07-17
+	 */
+	private static function is_root( $dir ) {
+		// Remove drive letter and colon on windows.
+		if ( ':' === substr( $dir, 1, 1 ) ) {
+			$dir = substr( $dir, 2 );
+		}
+
+		return '/' === $dir;
+	}
+
+	/**
+	 * Normalize filesystem path.
+	 *
+	 * @see https://developer.wordpress.org/reference/functions/wp_normalize_path/
+	 * @param string $path Filesystem path.
+	 * @return string Path with directory separators normalized.
+	 * @author Justin Foell <justin.foell@webdevstudios.com>
+	 * @since  2020-07-17
+	 */
+	private static function normalize_path( $path ) {
+		// Standardise all paths to use '/'.
+		$path = str_replace( '\\', '/', $path );
+
+		// Replace multiple slashes down to a singular, allowing for network shares having two slashes.
+		$path = preg_replace( '|(?<=.)/+|', '/', $path );
+
+		// Windows paths should uppercase the drive letter.
+		if ( ':' === substr( $path, 1, 1 ) ) {
+			$path = ucfirst( $path );
+		}
+
+		return $path;
 	}
 
 	/**
