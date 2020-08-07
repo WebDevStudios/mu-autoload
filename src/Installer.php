@@ -74,7 +74,7 @@ class Installer {
 			return false;
 		}
 
-		$wp_load = $dir . '/wp-load.php';
+		$wp_load = $dir . DIRECTORY_SEPARATOR . 'wp-load.php';
 
 		if ( is_readable( $wp_load ) ) {
 			try {
@@ -92,7 +92,7 @@ class Installer {
 			return true;
 		}
 
-		return self::include_wp( $dir . '/..' );
+		return self::include_wp( $dir . DIRECTORY_SEPARATOR . '..' );
 	}
 
 	/**
@@ -185,10 +185,23 @@ class Installer {
 	 * @since  2019-11-12
 	 */
 	private static function get_wp_autoload_path( $vendor_dir ) {
-		if ( defined( 'WP_CONTENT_DIR' ) && 0 === strpos( $vendor_dir, WP_CONTENT_DIR ) ) {
-			return "WP_CONTENT_DIR . '" . substr( $vendor_dir, strlen( WP_CONTENT_DIR ) ) . "/autoload.php'";
-		} elseif ( defined( 'ABSPATH' ) && 0 === strpos( $vendor_dir, ABSPATH ) ) {
-			return "ABSPATH . '" . substr( $vendor_dir, strlen( ABSPATH ) ) . "/autoload.php'";
+		$vendor_dir = self::normalize_path( $vendor_dir );
+
+		if ( defined( 'WP_CONTENT_DIR' ) ) {
+			$wp_content_dir = self::normalize_path( WP_CONTENT_DIR );
+
+			if ( 0 === strpos( $vendor_dir, $wp_content_dir ) ) {
+				return "WP_CONTENT_DIR . '" . substr( $vendor_dir, strlen( $wp_content_dir ) ) . "/autoload.php'";
+			}
+		}
+
+		if ( defined( 'ABSPATH' ) ) {
+			$abspath = self::normalize_path( ABSPATH );
+
+			if ( 0 === strpos( $vendor_dir, $abspath ) ) {
+
+				return "ABSPATH . '" . substr( $vendor_dir, strlen( $abspath ) ) . "/autoload.php'";
+			}
 		}
 		return "'{$vendor_dir}/autoload.php'";
 	}
