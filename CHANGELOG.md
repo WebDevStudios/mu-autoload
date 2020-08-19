@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.4]
+
+* Fixed path issues in Windows.
+
 ## [1.3]
 
 * Added progress indication
