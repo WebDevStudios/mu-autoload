@@ -231,8 +231,6 @@ class Installer {
 if ( is_readable( \$autoload ) ) {
 	require_once \$autoload;
 }
-
-
 LOADER;
 	}
 }
