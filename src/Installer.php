@@ -77,6 +77,9 @@ class Installer {
 		$wp_load = $dir . DIRECTORY_SEPARATOR . 'wp-load.php';
 
 		if ( is_readable( $wp_load ) ) {
+			// Turn debug ON to prevent usage of `@`!
+			define( 'WP_DEBUG', true );
+
 			try {
 				require_once $wp_load;
 			} catch ( ErrorException $ee ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch -- empty OK.
