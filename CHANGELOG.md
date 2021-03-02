@@ -1,6 +1,7 @@
 # Changelog
 
 ## [Unreleased]
+* Dope changelog links
 
 ## [1.5]
 * Add WP_DEBUG for better exception handling
