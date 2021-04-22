@@ -82,7 +82,7 @@ class Installer {
 
 			try {
 				require_once $wp_load;
-			} catch ( ErrorException $ee ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch -- empty OK.
+			} catch ( ErrorException $ee ) {
 
 				/*
 				 * We may encounter a database exception if it's not hooked up,
@@ -165,7 +165,7 @@ class Installer {
 	 * @since  2020-07-17
 	 */
 	private static function normalize_path( $path ) {
-		// Standardise all paths to use '/'.
+		// Standardize all paths to use '/'.
 		$path = str_replace( '\\', '/', $path );
 
 		// Replace multiple slashes down to a singular, allowing for network shares having two slashes.
