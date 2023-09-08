@@ -4,6 +4,9 @@
 * Dope changelog links
 * Remove unneeded PHPCS ignore
 
+## [1.6]
+* Update to Composer v2
+
 ## [1.5]
 * Add WP_DEBUG for better exception handling
 
